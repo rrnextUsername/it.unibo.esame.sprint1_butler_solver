@@ -1,0 +1,116 @@
+ System fridge 
+ 
+mqttBroker "localhost" : 1883    //192.168.1.18  192.168.43.229
+
+Event		modelContent		:	modelContent( content( ENTITY, INVENTORY ) ) 
+Event 		stopAppl			:	stopAppl
+Event 		reactivateAppl		:	reactivateAppl
+
+Dispatch 	changeInventory		: 	changeInventory( OPERATION, CATEGORY , NAME )
+Dispatch	queryPresence		:	queryPresence( CATEGORY, NAME )
+Dispatch	replyPresence		:	replyPresence( STATUS )
+Dispatch  	exposeFood     		: 	exposeFood	  
+   
+Dispatch	cmd					:	cmd( CMD )
+Dispatch 	azione				:	azione( AZIONE )
+
+Dispatch	check				: 	check( NUMBER )
+Dispatch	wait				: 	wait( TIME )
+
+Dispatch	done				: 	done
+
+ 
+Context ctxButler      ip [host="localhost"    port=8038]   -mqtt
+
+QActor butler context ctxButler{
+	State s0 initial {
+		solve( consult("sysRules.pl")	 )  
+		
+		      
+		solve( consult("butlerModel.pl")	 ) 
+		
+		solve( consult("test.pl")	 )
+		
+		solve( showResourceModel ) 				
+		
+		//run itunibo.coap.modelResourceCoap.create( myself, "fridge" ) //CoAP access
+		
+	}Goto waitCmd
+	
+	State waitCmd{		
+		run itunibo.butler.butlerResourceModelSupport.updateModelState(myself, "waitCmd")				
+		solve( showResourceModel ) 	
+		
+	} Transition t0 whenMsg cmd -> solveCmd
+	
+	State solveCmd{		
+		onMsg(cmd: cmd (CMD)){
+			printCurrentMessage
+			run itunibo.butler.butlerResourceModelSupport.updateModelState(myself, "solveCmd")
+					
+			solve( comando($payloadArg(0)))	
+		}		
+	} Goto solveAction
+	
+	State solveAction{
+		run itunibo.butler.butlerResourceModelSupport.updateModelState(myself, "solveAction")
+		
+		solve( retract ( azione (ARG0, ARG1, ARG2, ARG3 ) ))
+			
+		if "currentSolution.isSuccess()"{	
+			["val Azione= currentSolution.getVarValue(\"ARG0\").toString()"]	
+					
+			if "Azione==\"check\"" {
+				["val Number= currentSolution.getVarValue(\"ARG1\").toString()"]
+				forward butler -m check : check ( $Number)
+			}
+			if "Azione==\"wait\"" {
+				["val Time= currentSolution.getVarValue(\"ARG1\").toString()"]
+				forward butler -m wait : wait($Time)
+			}	
+		
+		} else {
+			forward butler -m done : done
+		}
+	} Transition t0 whenMsg check -> azioneCheck
+					whenMsg wait -> azioneWait
+					whenMsg done -> waitCmd
+					whenEvent stopAppl -> stoppedSolvedAction
+					
+					
+	State stoppedSolvedAction{
+		run itunibo.butler.butlerResourceModelSupport.updateModelState(myself, "stoppedSolvedAction")
+		
+		printCurrentMessage		
+		solve( showResourceModel ) 	
+		
+	} Transition t0 whenEvent reactivateAppl -> restartSolvedAction
+	
+	State restartSolvedAction{		
+		solve (assert( done ( restartSolvedAction ) ) )
+		
+		printCurrentMessage
+		solve( showResourceModel ) 		
+			
+	} Transition t0 whenMsg check -> azioneCheck
+					whenMsg wait -> azioneWait
+					whenMsg done -> waitCmd
+					whenEvent stopAppl -> stoppedSolvedAction
+					
+	
+	State azioneCheck{
+		onMsg (check : check (NUMBER)){
+			run itunibo.butler.butlerResourceModelSupport.updateModelState(myself, "azioneCheck")
+			solve( showResourceModel ) 	
+			solve (assert( done ( check , $payloadArg(0) ) ) )
+		}
+	} Goto solveAction
+	
+	State azioneWait{
+		onMsg( wait : wait( TIME )){
+			run itunibo.butler.butlerResourceModelSupport.updateModelState(myself, "azioneWait")
+			solve( showResourceModel ) 	
+			solve (assert( done ( wait ,  $payloadArg(0)) ) )		
+		}
+	} Transition t0 whenTime 2000 -> solveAction	
+}
