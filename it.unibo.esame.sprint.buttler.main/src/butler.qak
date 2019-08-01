@@ -2,14 +2,8 @@
  
 mqttBroker "localhost" : 1883    //192.168.1.18  192.168.43.229
 
-Event		modelContent		:	modelContent( content( ENTITY, INVENTORY ) ) 
 Event 		stopAppl			:	stopAppl
 Event 		reactivateAppl		:	reactivateAppl
-
-Dispatch 	changeInventory		: 	changeInventory( OPERATION, CATEGORY , NAME )
-Dispatch	queryPresence		:	queryPresence( CATEGORY, NAME )
-Dispatch	replyPresence		:	replyPresence( STATUS )
-Dispatch  	exposeFood     		: 	exposeFood	  
    
 Dispatch	cmd					:	cmd( CMD )
 Dispatch 	azione				:	azione( AZIONE )
