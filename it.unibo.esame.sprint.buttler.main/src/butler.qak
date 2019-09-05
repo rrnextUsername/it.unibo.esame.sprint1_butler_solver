@@ -3,7 +3,9 @@
  * 		->	However, the Maitre is able, at any time, to use his/her smart-phone to stop or reactivate an activated task.
  * 	
  * 	BACKLOG ITEM:
- * 		->	BUTLER riceve comandi dal Maitre	
+ * 		->	BUTLER deve ricevere e interpretare i comandi del MAITRE
+ * 		->	MAITRE deve poter fermare in qualsiasi momento il task corrente
+ * 		->	MAITRE deve poter far ripartire un task fermato
  * 
  * 	SPRINT GOAL:
  * 		->	il butler deve poter ricevere comandi dal Maitre
