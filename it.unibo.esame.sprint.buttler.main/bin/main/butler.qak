@@ -1,4 +1,23 @@
- System fridge 
+/*	REQUIREMENTS:
+ * 		->	the RBR must be able to accept the following commands sent by the smart-phone of Maitre
+ * 		->	However, the Maitre is able, at any time, to use his/her smart-phone to stop or reactivate an activated task.
+ * 	
+ * 	BACKLOG ITEM:
+ * 		->	BUTLER riceve comandi dal Maitre	
+ * 
+ * 	SPRINT GOAL:
+ * 		->	il butler deve poter ricevere comandi dal Maitre
+ * 		->	il butler deve saper interpretare i comandi come liste di azioni
+ * 		->	il butler deve poter ricevere messaggi di stop/reactivate dal Maitre
+ * 		->	il butler deve interrompere l'esecuzione di azioni su stop e riprenderla su restart
+ * 
+ * 	SPRINT RETROSPECTIVE:
+ * 		->	necessario codificare meglio le funzioni prolog, magari raggruppandole in un file unico
+ * 		->	la modifica dello stato del butler potrebbe essere fatta con una funzione prolog invece che utilizzando resources
+ * 		->	i comandi del Maitre potrebbero avere più argomenti oltre che il loro nome
+ */
+
+System butler 
  
 mqttBroker "localhost" : 1883    //192.168.1.18  192.168.43.229
 
@@ -6,7 +25,6 @@ Event 		stopAppl			:	stopAppl
 Event 		reactivateAppl		:	reactivateAppl
    
 Dispatch	cmd					:	cmd( CMD )
-Dispatch 	azione				:	azione( AZIONE )
 
 Dispatch	check				: 	check( NUMBER )
 Dispatch	wait				: 	wait( TIME )
