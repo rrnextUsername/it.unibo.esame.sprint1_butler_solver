@@ -3,9 +3,9 @@
  * 		->	However, the Maitre is able, at any time, to use his/her smart-phone to stop or reactivate an activated task.
  * 	
  * 	BACKLOG ITEM:
- * 		->	BUTLER deve ricevere e interpretare i comandi del MAITRE
- * 		->	MAITRE deve poter fermare in qualsiasi momento il task corrente
- * 		->	MAITRE deve poter far ripartire un task fermato
+ * 		->	2
+ * 		->	13
+ * 		->	14
  * 
  * 	SPRINT GOAL:
  * 		->	il butler deve poter ricevere comandi dal Maitre
@@ -16,7 +16,7 @@
  * 	SPRINT RETROSPECTIVE:
  * 		->	necessario codificare meglio le funzioni prolog, magari raggruppandole in un file unico
  * 		->	la modifica dello stato del butler potrebbe essere fatta con una funzione prolog invece che utilizzando resources
- * 		->	i comandi del Maitre potrebbero avere pi˘ argomenti oltre che il loro nome
+ * 		->	i comandi del Maitre potrebbero avere pi√π argomenti oltre che il loro nome
  */
 
 System butler 
